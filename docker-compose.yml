@@ -15,15 +15,15 @@ services:
     ports: ["6379:6379"]
 
   backend:
-    build: ./backend
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    volumes:
-      - ./backend:/code
-    env_file:
-      - ./backend/.env
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: backend/.env.docker
     depends_on:
       - db
       - redis
     ports: ["8000:8000"]
+    volumes:
+      - ./backend:/app        # live-reload in dev
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
-# Optional build context

@@ -25,7 +25,7 @@ python -m venv venv
 source venv/bin/activate
 pip install "uvicorn[standard]" fastapi sqlalchemy psycopg2-binary pydantic celery redis python-dotenv
 ```
-### 3. Create backend/.env:
+#### Create backend/.env:
 ```bash
 DATABASE_URL=postgresql://<db_user>:<db_password>@localhost:5432/tododb
 REDIS_URL=redis://localhost:6379/0
@@ -39,9 +39,15 @@ createdb tododb
 ```bash
 uvicorn main:app --reload
 ```
+##### Run Celery worker (new terminal)
 
 ```bash
+celery -A app.celery_worker.celery worker --loglevel=info
+
 ```
-
+### 3. Frontend
 ```bash
+cd ../frontend
+npm install
+npm run dev 
 ```
