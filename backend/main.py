@@ -9,7 +9,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Todo API")
 
-# CORS so a future React or plain HTML frontend can call the API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], allow_credentials=True,
