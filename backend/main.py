@@ -1,12 +1,21 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, APIRouter, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine
+import os
+from dotenv import load_dotenv  
 
+from app.models import Base
 from app import models, schemas, crud
 from app.database import Base, engine, SessionLocal
+from app.assistant.assistant import ask_assistant
 
+load_dotenv()
+
+engine = create_engine(os.getenv("DATABASE_URL"))
 Base.metadata.create_all(bind=engine)
 
+router = APIRouter()
 app = FastAPI(title="Todo API")
 
 app.add_middleware(
@@ -46,3 +55,11 @@ def remove_todo(todo_id: int, db: Session = Depends(get_db)):
     todo = crud.delete_todo(db, todo_id)
     if not todo:
         raise HTTPException(404, "Todo not found")
+
+@app.post("/ask-assistant")
+async def ask_assistant(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt")
+    if not prompt:
+        raise HTTPException(400, "Prompt is required")
+    return {"response": ask_assistant(prompt)}
