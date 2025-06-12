@@ -149,4 +149,4 @@ ehthumbs.db
 Thumbs.db
 
 *.env
-*/.env
+*/.envbackend/.env.docker
